@@ -16,9 +16,7 @@ connectDB()
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// === CORS: allow multiple origins
-// Set CLIENT_URL env var to a comma-separated list, e.g:
-// CLIENT_URL=http://localhost:5173,https://your-frontend.onrender.app,https://your-frontend.vercel.app
+// === CORS: allow multiple origins (comma-separated in CLIENT_URL)
 const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
   .split(",")
   .map((u) => u.trim())
@@ -26,13 +24,12 @@ const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
 
 const corsOptions = {
   origin: (incomingOrigin, callback) => {
-    // incomingOrigin is undefined for curl/postman (server-to-server). Allow those.
+    // allow non-browser tools (curl, server-to-server) where incomingOrigin is undefined
     if (!incomingOrigin) return callback(null, true);
 
     if (allowedOrigins.includes(incomingOrigin)) {
       return callback(null, true);
     }
-    // Not allowed
     return callback(
       new Error(`CORS policy: Origin ${incomingOrigin} not allowed`),
       false
@@ -40,11 +37,22 @@ const corsOptions = {
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
-  optionsSuccessStatus: 200,
+  optionsSuccessStatus: 204, // success status for preflight
 };
 
+// apply CORS for all routes
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // enable preflight for all routes
+
+// Simple generic preflight handler (avoids using app.options('*', ...))
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    // The cors middleware already sets appropriate Access-Control-* headers,
+    // but we must send a quick response for preflight.
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 app.use(express.json());
 
 // Basic health route
