@@ -7,21 +7,44 @@ import connectDB from "./config/db.js";
 import userRouter from "./routes/userRoute.js";
 import resumeRouter from "./routes/resumeRoutes.js";
 import aiRoute from "./routes/aiRoutes.js";
-import serverless from "serverless-http";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Connect to MongoDB (do not block listen if it retries - keep it async)
-connectDB();
+// Connect to MongoDB (run in background so server can start)
+connectDB()
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
-// Middleware
+// === CORS: allow multiple origins
+// Set CLIENT_URL env var to a comma-separated list, e.g:
+// CLIENT_URL=http://localhost:5173,https://your-frontend.onrender.app,https://your-frontend.vercel.app
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+  .split(",")
+  .map((u) => u.trim())
+  .filter(Boolean);
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL || "*", // in production set CLIENT_URL to your front-end origin
+  origin: (incomingOrigin, callback) => {
+    // incomingOrigin is undefined for curl/postman (server-to-server). Allow those.
+    if (!incomingOrigin) return callback(null, true);
+
+    if (allowedOrigins.includes(incomingOrigin)) {
+      return callback(null, true);
+    }
+    // Not allowed
+    return callback(
+      new Error(`CORS policy: Origin ${incomingOrigin} not allowed`),
+      false
+    );
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
+  optionsSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // enable preflight for all routes
 app.use(express.json());
 
 // Basic health route
@@ -37,19 +60,8 @@ app.use("/api/user", userRouter);
 app.use("/api/resume", resumeRouter);
 app.use("/api/ai", aiRoute);
 
-// Export the app for serverless platforms (Vercel) and for testing
-export default app;
-export const handler = serverless(app);
-
-// Start listening if a port is provided (Render, Heroku, plain Node)
-if (process.env.PORT) {
-  app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-  });
-}
-// Also allow starting locally even if PORT not set
-else if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Server (dev) listening on port ${PORT}`);
-  });
-}
+// Start server (Render provides PORT env)
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+  console.log("Allowed CORS origins:", allowedOrigins);
+});
