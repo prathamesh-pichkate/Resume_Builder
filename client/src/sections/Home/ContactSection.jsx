@@ -1,7 +1,7 @@
 import { ArrowRightIcon, MailIcon, UserIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import SectionTitle from "../../components/SectionTitle";
-
+import toast from "react-hot-toast";
 export default function ContactSection() {
   return (
     <div className="px-4 md:px-16 lg:px-24 xl:px-32">
@@ -73,6 +73,7 @@ export default function ContactSection() {
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 280, damping: 70, mass: 1 }}
+          onClick={() => toast.success("Message sent successfully!")}
         >
           Submit
           <ArrowRightIcon className="size-5" />

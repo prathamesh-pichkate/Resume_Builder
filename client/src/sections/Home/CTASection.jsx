@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export default function CTASection() {
+  const navigate = useNavigate();
   return (
     <motion.div
       className="max-w-5xl py-16 mt-40 md:pl-20 md:w-full max-md:mx-4 md:mx-auto flex flex-col md:flex-row max-md:gap-6 items-center justify-between text-left bg-gradient-to-b from-pink-900 to-pink-950 rounded-2xl p-6 text-white"
@@ -35,6 +37,7 @@ export default function CTASection() {
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ type: "spring", stiffness: 280, damping: 70, mass: 1 }}
+        onClick={() => navigate("/register")}
       >
         Get Started
       </motion.button>

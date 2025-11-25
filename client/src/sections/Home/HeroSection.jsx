@@ -2,6 +2,7 @@ import React from "react";
 import { CheckIcon, ChevronRightIcon, VideoIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import TiltedImage from "../../components/Home/TiltImage";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
   const specialFeatures = [
@@ -10,11 +11,12 @@ const HeroSection = () => {
     "Ready in 5 Minutes",
   ];
 
+  const navigate = useNavigate();
+
   return (
     <div className="relative flex flex-col items-center justify-center px-4 md:px-16 lg:px-24 xl:px-32">
       <div className="absolute top-30 -z-10 left-1/4 size-72 bg-pink-600 blur-[300px]"></div>
       <motion.a
-        href="https://prebuiltui.com"
         className="group flex items-center gap-2 rounded-full p-1 pr-3 mt-44 text-pink-100 bg-pink-200/15"
         initial={{ y: -20, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
@@ -74,7 +76,10 @@ const HeroSection = () => {
         viewport={{ once: true }}
         transition={{ type: "spring", stiffness: 320, damping: 70, mass: 1 }}
       >
-        <button className="bg-pink-600 hover:bg-pink-700 text-white rounded-full px-7 h-11">
+        <button
+          onClick={() => navigate("/login")}
+          className="bg-pink-600 hover:bg-pink-700 text-white rounded-full px-7 h-11"
+        >
           Build My Resume Now
         </button>
         <button className="flex items-center gap-2 border border-pink-900 hover:bg-pink-950/50 transition rounded-full px-6 h-11">
