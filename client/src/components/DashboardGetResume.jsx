@@ -94,8 +94,10 @@ const DashboardGetResume = () => {
           animate={{ y: 0, opacity: 1 }}
           className="mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-3">My Resumes</h1>
-          <p className="text-gray-400 text-lg">
+          <h1 className="text-4xl md:text-5xl font-bold mb-3 text-pink-500">
+            My Resumes
+          </h1>
+          <p className="text-red-200 text-lg">
             Manage and edit your professional resumes
           </p>
         </motion.div>
@@ -112,7 +114,7 @@ const DashboardGetResume = () => {
               return (
                 <div
                   key={resume._id}
-                  className="relative w-full h-48 flex flex-col items-center justify-center rounded-lg gap-2 border group hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  className="relative w-full h-56 flex flex-col items-center justify-center rounded-lg gap-2 border group hover:shadow-lg transition-all duration-100 cursor-pointer"
                   style={{
                     background: `linear-gradient(135deg, ${baseColor}10, ${baseColor}40)`,
                     borderColor: baseColor + "40",
@@ -123,19 +125,19 @@ const DashboardGetResume = () => {
                     onClick={() => navigate(`/home/builder/${resume._id}`)}
                     aria-label={`Open ${resume.title}`}
                   />
-                  <div className="z-10 flex flex-col items-center">
+                  <div className="z-10 flex flex-col items-center space-y-2">
                     <FilePenLineIcon
-                      className="size-7 group-hover:scale-105 transition-all"
+                      className="size-14 group-hover:scale-105 transition-all"
                       style={{ color: baseColor }}
                     />
                     <p
-                      className="text-sm group-hover:scale-105 transition-all px-2 text-center"
+                      className="text-sm md:text-xl group-hover:scale-105 transition-all px-2 text-center"
                       style={{ color: baseColor }}
                     >
                       {resume.title || "Untitled Resume"}
                     </p>
                     <p
-                      className="text-[11px] text-slate-400 transition-all duration-300 px-2 text-center"
+                      className="text-[11px] md:text-[14px] text-slate-400 transition-all duration-300 px-2 text-center"
                       style={{ color: baseColor + "90" }}
                     >
                       Updated on{" "}

@@ -55,13 +55,13 @@ const PersonalInfoForm = ({
       icon: Linkedin,
       required: false,
     },
-    {
-      key: "github",
-      label: "GitHub Profile",
-      type: "url",
-      icon: Github,
-      required: false,
-    },
+    // {
+    //   key: "github",
+    //   label: "GitHub Profile",
+    //   type: "url",
+    //   icon: Github,
+    //   required: false,
+    // },
     {
       key: "website",
       label: "Personal Website",

@@ -3,6 +3,7 @@ import ModernTemplate from "../assets/templates/ModernTemplate";
 import MinimalTemplate from "../assets/templates/MinimalTemplate";
 import MinimalImageTemplate from "../assets/templates/MinimalImageTemplate";
 import ClassicTemplate from "../assets/templates/ClassicTemplate";
+import EngineeringTemplate from "../assets/templates/EngineeringTemplate";
 
 const ResumePreview = ({
   id = "resume-preview",
@@ -19,6 +20,8 @@ const ResumePreview = ({
         return <MinimalTemplate data={data} accentColor={accentColor} />;
       case "minimal-image":
         return <MinimalImageTemplate data={data} accentColor={accentColor} />;
+      case "engineering":
+        return <EngineeringTemplate data={data} accentColor={accentColor} />;
       default:
         return <ClassicTemplate data={data} accentColor={accentColor} />;
     }

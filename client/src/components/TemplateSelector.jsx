@@ -27,6 +27,12 @@ const TemplateSelector = ({ selectedTemplate, onChange }) => {
       name: "Minimal",
       preview: "Ultra-clean design that puts your content front and center",
     },
+    {
+      id: "engineering",
+      name: "Engineering",
+      preview:
+        "Structured layout with emphasis on technical skills and project experience.",
+    },
   ];
 
   return (
