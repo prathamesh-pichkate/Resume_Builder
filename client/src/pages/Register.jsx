@@ -4,6 +4,7 @@ import api from "../config/api";
 import toast from "react-hot-toast";
 import { login } from "../app/features/authSlice";
 import { useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -69,17 +70,7 @@ const Register = () => {
               Create your account to get started
             </p>
 
-            <button
-              type="button"
-              className="w-full mt-8 bg-gray-500/10 flex items-center justify-center h-12 rounded-full text-gray-50 hover:bg-gray-500/20 transition-colors gap-3 border border-gray-700/50"
-            >
-              <img
-                src="https://img.icons8.com/?size=100&id=V5cGWnc9R4xj&format=png&color=000000"
-                alt="googleLogo"
-                className="w-7"
-              />
-              <span className="text-sm sm:text-base">Sign up with Google</span>
-            </button>
+            <OAuth from="register" />
 
             <div className="flex items-center gap-4 w-full my-6">
               <div className="w-full h-px bg-gray-700"></div>

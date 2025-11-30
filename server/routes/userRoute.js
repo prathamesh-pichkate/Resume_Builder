@@ -4,6 +4,7 @@ import {
   registerUser,
   loginUser,
   getUserResumes,
+  googleLoginOrRegister,
 } from "../controllers/user.js";
 import authMiddlware from "../middlewares/auth.middleware.js";
 
@@ -13,5 +14,6 @@ route.post("/register", registerUser);
 route.post("/login", loginUser);
 route.get("/data", authMiddlware, getUserById);
 route.get("/resumes", authMiddlware, getUserResumes);
+route.post("/google", googleLoginOrRegister);
 
 export default route;

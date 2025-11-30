@@ -124,3 +124,52 @@ export const getUserResumes = async (req, res) => {
     return res.status(400).json({ message: error.message });
   }
 };
+
+export const googleLoginOrRegister = async (req, res) => {
+  const { name, email, from } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (user) {
+      // If this request came from the signup page, tell client the user already exists
+      if (from === "register") {
+        return res
+          .status(409)
+          .json({ message: "User already exists with this email" });
+      }
+
+      // Otherwise (default) behave as before: login existing user
+      const token = generateTokenRegister(user);
+      return res.status(200).json({
+        message: "Login successful",
+        token,
+        user: { id: user._id, name: user.name, email: user.email },
+      });
+    } else {
+      // create new user (same as before)
+      const randomPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = await bcrypt.hash(randomPassword, 10);
+
+      console.log("randomPassword:", randomPassword);
+
+      const newUser = new User({
+        name,
+        email,
+        password: hashedPassword,
+      });
+
+      await newUser.save();
+      const token = generateTokenRegister(newUser);
+
+      return res.status(201).json({
+        message: "User registered successfully",
+        token,
+        user: { id: newUser._id, name: newUser.name, email: newUser.email },
+      });
+    }
+  } catch (error) {
+    console.error("Error in Google login/register:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
