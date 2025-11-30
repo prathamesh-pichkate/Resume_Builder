@@ -114,26 +114,20 @@ Create `.env` files for server and client as described below.
 Create `server/.env` with at least:
 
 ```
-# Server
-PORT=5000
+PORT=3000
+CLIENT_URL=http://localhost:5173
+MONGODB_URI=
+JWT_SECRET=
 
-# MongoDB
-MONGO_URI=mongodb+srv://<user>:<password>@cluster0.mongodb.net/dbname
+# ImageKit configuration (get from your ImageKit dashboard)
+IMAGEKIT_PUBLIC_KEY=
+IMAGEKIT_PRIVATE_KEY=
+IMAGEKIT_URL_ENDPOINT=
 
-# JWT for any custom token signing
-JWT_SECRET=your_jwt_secret_here
-
-# OpenAI (for resume optimization)
-OPENAI_API_KEY=sk-...
-
-# ImageKit
-IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
-IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
-IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id/
-
-# Firebase admin (if using server-side Firebase Admin). Provide path or JSON content as needed.
-# You can set a path to a service account JSON file or paste JSON as a string and parse it.
-
+# Gemini AI Configuration
+GEMINI_API_KEY=
+GEMINI_BASE_URL=
+GEMINI_MODEL_NAME=
 
 ```
 
