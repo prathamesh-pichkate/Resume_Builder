@@ -59,6 +59,8 @@ Each feature is implemented with usability and performance in mind. The UI is re
 - Client handles UI, authentication via Firebase, calling the server API for CRUD and AI functions.
 - Server handles resume storage, image uploads/manipulation, background removal via ImageKit, and OpenAI calls for content optimization.
 
+![Architecture](./client/public/assets/architectures.png)
+
 ## Prerequisites
 
 - Node.js v18+ and npm
