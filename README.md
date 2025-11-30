@@ -37,4 +37,10 @@ A production-ready **Online Resume Builder** app that enables users to **create,
 ## 🎯 Demo / Screenshots
 
 ```md
+<img width="1862" height="964" alt="image" src="https://github.com/user-attachments/assets/585effb2-f45c-4505-8495-1a071f342b88" />
+<img width="1862" height="964" alt="image" src="https://github.com/user-attachments/assets/75a19d15-1d72-4bb2-8d6f-0ba970b698a0" />
+<img width="1862" height="964" alt="image" src="https://github.com/user-attachments/assets/2d7b9f57-a3ab-4e0b-8600-0f5a2373209e" />
+
+
+
 
