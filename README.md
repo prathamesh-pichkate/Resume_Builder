@@ -1,5 +1,3 @@
-++ README.md
-
 # 🚀 Online Resume Builder
 
 A production-ready Online Resume Builder that helps users create, edit, manage, optimize and publish professional resumes with live preview links, AI-powered suggestions, background removal for profile images, and multiple modern templates.
@@ -40,9 +38,6 @@ This repository contains a React + Vite client and an Express server (Node) that
 Each feature is implemented with usability and performance in mind. The UI is responsive and aims to make resume creation fast and intuitive.
 
 ## Demo / Screenshots
-
-Add screenshots and a demo link here when available. Example placeholders:
-
 ![Home Page](./client/public/assets/HomePage.png)
 ![User Home Page](./client/public/assets/UserHomePage.png)
 ![Resume Builder Page](./client/public/assets/ResumeBuilderPage.png)
