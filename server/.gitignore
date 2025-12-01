@@ -64,6 +64,7 @@ yarn-error.log*
 
 # Environment variables
 .env
+.env.docker
 
 # Build output
 /dist/

@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: resume-builder-server-container
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./server/.env.docker
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    networks:
+      - resume-builder-network
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: resume-builder-client-container
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./client/.env.docker
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    networks:
+      - resume-builder-network
+    restart: unless-stopped
+
+networks:
+  resume-builder-network:
+    driver: bridge
