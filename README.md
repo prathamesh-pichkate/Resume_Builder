@@ -16,6 +16,7 @@ This repository contains a React + Vite client and an Express server (Node) that
 - [Quick Start](#quick-start)
   - [Server (API)](#server-api)
   - [Client (Web app)](#client-web-app)
+- [Docker Setup](#docker-setup)
 - [Environment Variables](#environment-variables)
 - [Usage](#usage)
 - [API Endpoints (overview)](#api-endpoints-overview)
@@ -38,6 +39,7 @@ This repository contains a React + Vite client and an Express server (Node) that
 Each feature is implemented with usability and performance in mind. The UI is responsive and aims to make resume creation fast and intuitive.
 
 ## Demo / Screenshots
+
 ![Home Page](./client/public/assets/HomePage.png)
 ![User Home Page](./client/public/assets/UserHomePage.png)
 ![Resume Builder Page](./client/public/assets/ResumeBuilderPage.png)
@@ -106,6 +108,84 @@ npm run dev
 ```
 
 - The client uses Vite. Default dev server runs on `http://localhost:5173` (or the port provided by Vite).
+
+## Docker Setup
+
+Run the entire application using Docker Compose for a consistent development and production environment.
+
+### Prerequisites for Docker
+
+- Docker installed ([download here](https://www.docker.com/products/docker-desktop))
+- Docker Compose installed (usually included with Docker Desktop)
+
+### Environment Files for Docker
+
+Before running Docker Compose, ensure you have `.env.docker` files in both `server/` and `client/` directories:
+
+```bash
+# Server Docker environment
+server/.env.docker
+
+# Client Docker environment
+client/.env.docker
+```
+
+See [Environment Variables](#environment-variables) section below for required variables.
+
+### Running with Docker Compose (Recommended)
+
+```bash
+# Build and start both server and client containers
+docker-compose up --build
+
+# Run in detached mode (background)
+docker-compose up -d --build
+
+# View logs
+docker-compose logs -f
+
+# Stop containers
+docker-compose down
+```
+
+**Access the application:**
+
+- **Frontend**: `http://localhost:5173`
+- **Backend API**: `http://localhost:3000`
+
+### Docker Setup Details
+
+- **Server** (`server/Dockerfile`): Node.js 18, runs `npm start` on port 3000
+- **Client** (`client/Dockerfile`): Node.js 20-alpine, runs `npm run dev` on port 5173
+- **MongoDB**: Uses MongoDB Atlas (no local database container)
+- **Network**: Both containers communicate via a shared bridge network
+
+### Build Individual Docker Images
+
+#### Server Image
+
+```bash
+cd server
+docker build -t resume-builder-server:latest .
+docker run -p 3000:3000 --env-file .env.docker resume-builder-server:latest
+```
+
+#### Client Image
+
+```bash
+cd client
+docker build -t resume-builder-client:latest .
+docker run -p 5173:5173 --env-file .env.docker resume-builder-client:latest
+```
+
+### Important Notes for Docker
+
+- Ensure `server/.env.docker` contains a valid `MONGODB_URI` pointing to MongoDB Atlas
+- The `NODE_ENV` is set to `production` in the docker-compose file
+- Volume mounts allow for live code reloading during development
+- Use `docker-compose down -v` to remove containers and volumes if needed
+
+For a comprehensive Docker setup guide with troubleshooting, see [`DOCKER_SETUP.md`](./DOCKER_SETUP.md).
 
 ## Environment Variables
 
