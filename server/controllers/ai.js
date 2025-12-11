@@ -1,5 +1,5 @@
-import openai from "../config/ai.js";
-import Resume from "../models/Resume.js";
+import openai from '../config/ai.js';
+import Resume from '../models/Resume.js';
 
 //Enhancing the resumes professional summary: POST: /api/ai/enhance-pro-sum
 export const enhanceProfessionalSummary = async (req, res) => {
@@ -7,18 +7,18 @@ export const enhanceProfessionalSummary = async (req, res) => {
     const { userContent } = req.body;
 
     if (!userContent) {
-      return res.status(400).json({ message: "Content is required" });
+      return res.status(400).json({ message: 'Content is required' });
     }
 
     const response = await openai.chat.completions.create({
       model: process.env.GEMINI_MODEL_NAME,
       messages: [
         {
-          role: "system",
+          role: 'system',
           content:
-            "You are an expert in resume writing. Your task is to enhance the professional summary of a resume. The summary should be 1-2 sentences also highlighting key skills, experience, and career objectives. Make it compelling and ATS-friendly, and only return text no options or anything else.",
+            'You are an expert in resume writing. Your task is to enhance the professional summary of a resume. The summary should be 1-2 sentences also highlighting key skills, experience, and career objectives. Make it compelling and ATS-friendly, and only return text no options or anything else.',
         },
-        { role: "user", content: userContent },
+        { role: 'user', content: userContent },
       ],
     });
 
@@ -36,18 +36,18 @@ export const enhanceJobDescription = async (req, res) => {
     const { userContent } = req.body;
 
     if (!userContent) {
-      return res.status(400).json({ message: "Content is required" });
+      return res.status(400).json({ message: 'Content is required' });
     }
 
     const response = await openai.chat.completions.create({
       model: process.env.GEMINI_MODEL_NAME,
       messages: [
         {
-          role: "system",
+          role: 'system',
           content:
-            "You are an expert in resume writing. Your task is to enhance the job description of a resume. The job description should be only in 1-2 sentence also highlighting key responsibilities and achievements. Use action verbs and quantifiable results where possible. Make it ATS-friendly, and only return text no options or anything else.",
+            'You are an expert in resume writing. Your task is to enhance the job description of a resume. The job description should be only in 1-2 sentence also highlighting key responsibilities and achievements. Use action verbs and quantifiable results where possible. Make it ATS-friendly, and only return text no options or anything else.',
         },
-        { role: "user", content: userContent },
+        { role: 'user', content: userContent },
       ],
     });
 
@@ -65,19 +65,15 @@ export const uploadResume = async (req, res) => {
     const { resumeText, title } = req.body;
     const userId = req.userId;
 
-    console.log("Received userId in uploadResume:", userId);
+    console.log('Received userId in uploadResume:', userId);
 
-    console.log(
-      "Resume text received in uploadResume:",
-      resumeText?.slice?.(0, 200)
-    );
+    console.log('Resume text received in uploadResume:', resumeText?.slice?.(0, 200));
 
     if (!resumeText) {
-      return res.status(400).json({ message: "Resume text is required" });
+      return res.status(400).json({ message: 'Resume text is required' });
     }
 
-    const systemPrompt =
-      "You are an expert AI Agenet to extract data from resume.";
+    const systemPrompt = 'You are an expert AI Agenet to extract data from resume.';
 
     const userPrompt = `Extract data from this resume: ${resumeText} Provide data in the following JSON format with no additional text before or after:
     
@@ -156,26 +152,26 @@ export const uploadResume = async (req, res) => {
       model: process.env.GEMINI_MODEL_NAME,
       messages: [
         {
-          role: "system",
+          role: 'system',
           content: systemPrompt,
         },
-        { role: "user", content: userPrompt },
+        { role: 'user', content: userPrompt },
       ],
-      response_format: { type: "json_object" },
+      response_format: { type: 'json_object' },
     });
 
     const extractedData = response.choices[0].message.content;
     const parsedData = JSON.parse(extractedData);
     const newResume = new Resume({
       userId: userId,
-      title: title || "Untitled Resume",
+      title: title || 'Untitled Resume',
       ...parsedData,
     });
 
     // after await newResume.save();
     await newResume.save();
     return res.status(200).json({
-      message: "Resume uploaded successfully",
+      message: 'Resume uploaded successfully',
       resume: { _id: newResume._id },
     });
   } catch (error) {

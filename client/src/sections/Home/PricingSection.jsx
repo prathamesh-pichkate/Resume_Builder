@@ -1,7 +1,7 @@
-import { CheckIcon } from "lucide-react";
-import { motion } from "framer-motion";
-import { pricingData } from "../../data/pricing";
-import SectionTitle from "../../components/SectionTitle";
+import { CheckIcon } from 'lucide-react';
+// import { motion } from "framer-motion";
+import { pricingData } from '../../data/pricing';
+import SectionTitle from '../../components/SectionTitle';
 
 export default function PricingSection() {
   return (
@@ -17,14 +17,14 @@ export default function PricingSection() {
           <motion.div
             key={index}
             className={`w-72 text-center border border-pink-950 p-6 pb-16 rounded-xl ${
-              plan.mostPopular ? "bg-pink-950 relative" : "bg-pink-950/30"
+              plan.mostPopular ? 'bg-pink-950 relative' : 'bg-pink-950/30'
             }`}
             initial={{ y: 150, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
             transition={{
               delay: `${index * 0.15}`,
-              type: "spring",
+              type: 'spring',
               stiffness: 320,
               damping: 70,
               mass: 1,
@@ -38,9 +38,7 @@ export default function PricingSection() {
             <p className="font-semibold">{plan.name}</p>
             <h1 className="text-3xl font-semibold">
               ${plan.price}
-              <span className="text-gray-500 font-normal text-sm">
-                /{plan.period}
-              </span>
+              <span className="text-gray-500 font-normal text-sm">/{plan.period}</span>
             </h1>
             <ul className="list-none text-slate-300 mt-6 space-y-2">
               {plan.features.map((feature, index) => (
@@ -54,8 +52,8 @@ export default function PricingSection() {
               type="button"
               className={`w-full py-2.5 rounded-md font-medium mt-7 transition-all ${
                 plan.mostPopular
-                  ? "bg-white text-pink-600 hover:bg-slate-200"
-                  : "bg-pink-500 hover:bg-pink-600"
+                  ? 'bg-white text-pink-600 hover:bg-slate-200'
+                  : 'bg-pink-500 hover:bg-pink-600'
               }`}
             >
               Get Started

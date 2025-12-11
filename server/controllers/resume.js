@@ -1,6 +1,6 @@
-import imageKit from "../config/imageKit.js";
-import Resume from "../models/Resume.js";
-import fs from "fs";
+import imageKit from '../config/imageKit.js';
+import Resume from '../models/Resume.js';
+import fs from 'fs';
 
 //Creating a new resume: POST: /api/resume/create
 export const createResume = async (req, res) => {
@@ -11,9 +11,7 @@ export const createResume = async (req, res) => {
     //create new resume
     const newResume = await Resume.create({ userId, title });
 
-    return res
-      .status(201)
-      .json({ message: "Resume created successfully.", resume: newResume });
+    return res.status(201).json({ message: 'Resume created successfully.', resume: newResume });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -26,7 +24,7 @@ export const deleteResume = async (req, res) => {
     const { resumeId } = req.params;
 
     await Resume.findOneAndDelete({ userId, _id: resumeId });
-    return res.status(200).json({ message: "Resume Deleted Successfully." });
+    return res.status(200).json({ message: 'Resume Deleted Successfully.' });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -41,7 +39,7 @@ export const getResumeById = async (req, res) => {
     const resume = await Resume.findOne({ userId, _id: resumeId });
 
     if (!resume) {
-      return res.status(404).json({ message: "Resume not found." });
+      return res.status(404).json({ message: 'Resume not found.' });
     }
 
     return res.status(200).json({ resume });
@@ -58,7 +56,7 @@ export const getResumePublicById = async (req, res) => {
     const resume = await Resume.findOne({ public: true, _id: resumeId });
 
     if (!resume) {
-      return res.status(404).json({ message: "Resume not found." });
+      return res.status(404).json({ message: 'Resume not found.' });
     }
 
     return res.status(200).json({ resume });
@@ -74,37 +72,29 @@ export const updateResumeById = async (req, res) => {
     const { resumeId, resumeData, removeBackground } = req.body;
     const image = req.file;
 
-    console.log("Received updateResumeById request image", image);
+    console.log('Received updateResumeById request image', image);
 
-    console.log(
-      "updateResumeById called, resumeId:",
-      resumeId,
-      "userId:",
-      userId
-    );
-    console.log("req.file present:", !!image);
-    console.log("removeBackground raw:", removeBackground);
+    console.log('updateResumeById called, resumeId:', resumeId, 'userId:', userId);
+    console.log('req.file present:', !!image);
+    console.log('removeBackground raw:', removeBackground);
 
     // parse resumeData (could be stringified JSON or already object)
     let resumeDataCopy;
-    if (typeof resumeData === "string") {
+    if (typeof resumeData === 'string') {
       try {
         resumeDataCopy = JSON.parse(resumeData);
       } catch (err) {
-        console.error("Failed to JSON.parse resumeData:", err);
-        return res.status(400).json({ message: "Invalid resumeData JSON" });
+        console.error('Failed to JSON.parse resumeData:', err);
+        return res.status(400).json({ message: 'Invalid resumeData JSON' });
       }
-    } else if (typeof resumeData === "object" && resumeData !== null) {
+    } else if (typeof resumeData === 'object' && resumeData !== null) {
       resumeDataCopy = structuredClone(resumeData);
     } else {
       resumeDataCopy = {};
     }
 
     // Ensure personal_info exists
-    if (
-      !resumeDataCopy.personal_info ||
-      typeof resumeDataCopy.personal_info !== "object"
-    ) {
+    if (!resumeDataCopy.personal_info || typeof resumeDataCopy.personal_info !== 'object') {
       resumeDataCopy.personal_info = {};
     }
 
@@ -113,35 +103,26 @@ export const updateResumeById = async (req, res) => {
       try {
         // removeBackground might be sent as "yes" or "true" string from client
         const removeBgRequested =
-          removeBackground === "yes" ||
-          removeBackground === "true" ||
-          removeBackground === true;
+          removeBackground === 'yes' || removeBackground === 'true' || removeBackground === true;
 
         const transformPre =
-          "w-300,h-300,fo-face,z-0.75" +
-          (removeBgRequested ? ",e-bgremove" : "");
+          'w-300,h-300,fo-face,z-0.75' + (removeBgRequested ? ',e-bgremove' : '');
 
-        console.log(
-          "Uploading to ImageKit, transformPre:",
-          transformPre,
-          "file.path:",
-          image.path
-        );
+        console.log('Uploading to ImageKit, transformPre:', transformPre, 'file.path:', image.path);
 
         const response = await imageKit.files.upload({
           file: fs.createReadStream(image.path),
-          fileName: image.originalname || "resume.jpg",
-          folder: "user-resumes",
+          fileName: image.originalname || 'resume.jpg',
+          folder: 'user-resumes',
           transformation: { pre: transformPre },
         });
 
-        console.log("ImageKit upload response:", response);
+        console.log('ImageKit upload response:', response);
 
         // imageKit returns url in `response.url` (or `response.filePath` on some SDKs) — prefer url
-        const uploadedUrl =
-          response?.url || response?.filePath || response?.filePathUrl;
+        const uploadedUrl = response?.url || response?.filePath || response?.filePathUrl;
         if (!uploadedUrl) {
-          console.warn("No URL returned from ImageKit response", response);
+          console.warn('No URL returned from ImageKit response', response);
         } else {
           resumeDataCopy.personal_info.image = uploadedUrl;
         }
@@ -149,16 +130,16 @@ export const updateResumeById = async (req, res) => {
         // OPTIONAL: remove the temp file created by multer - cleanup
         try {
           fs.unlink(image.path, (err) => {
-            if (err) console.warn("Failed to unlink temp file:", err);
+            if (err) console.warn('Failed to unlink temp file:', err);
           });
         } catch (e) {
-          console.warn("cleanup error:", e);
+          console.warn('cleanup error:', e);
         }
       } catch (imgErr) {
-        console.error("Image upload failed:", imgErr);
+        console.error('Image upload failed:', imgErr);
         // don't abort update entirely — return helpful error
         return res.status(500).json({
-          message: "Image upload failed",
+          message: 'Image upload failed',
           error: imgErr.message || imgErr.toString(),
         });
       }
@@ -169,23 +150,17 @@ export const updateResumeById = async (req, res) => {
     const resume = await Resume.findOneAndUpdate(
       { userId, _id: resumeId },
       { $set: resumeDataCopy },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (!resume) {
-      return res
-        .status(404)
-        .json({ message: "Resume not found or you don't have access." });
+      return res.status(404).json({ message: "Resume not found or you don't have access." });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Resume updated successfully.", resume });
+    return res.status(200).json({ message: 'Resume updated successfully.', resume });
   } catch (error) {
-    console.error("updateResumeById error:", error);
-    return res
-      .status(500)
-      .json({ message: error.message || "Internal server error" });
+    console.error('updateResumeById error:', error);
+    return res.status(500).json({ message: error.message || 'Internal server error' });
   }
 };
 
