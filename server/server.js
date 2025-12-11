@@ -52,9 +52,6 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-//test_ci
-let name = 'Server';
-
 // Basic health route
 app.get('/', (req, res) => {
   res.send('API is running...');
