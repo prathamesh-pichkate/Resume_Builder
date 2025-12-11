@@ -1,47 +1,50 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { FilePenLineIcon, TrashIcon, PencilIcon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import OpenModal from "./OpenModal";
-import { useSelector, useDispatch } from "react-redux";
-import api from "../config/api";
-import toast from "react-hot-toast";
+import React, { useEffect, useState } from 'react';
+import { FilePenLineIcon, TrashIcon, PencilIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import OpenModal from './OpenModal';
+import { useSelector } from 'react-redux';
+import api from '../config/api';
+import toast from 'react-hot-toast';
 
 const DashboardGetResume = () => {
-  const { user, token } = useSelector((state) => state.auth || {});
+  const { token } = useSelector((state) => state.auth || {});
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const colors = ["#3B82F6", "#EF4444", "#10B981", "#8B5CF6", "#F59E0B"];
+  const colors = ['#3B82F6', '#EF4444', '#10B981', '#8B5CF6', '#F59E0B'];
 
   const [getResumes, setAllGetResumes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editResumeId, setEditResumeId] = useState(null);
 
-  const loadAllResumes = async () => {
-    if (!token) return;
-    setLoading(true);
-    try {
-      const { data } = await api.get("/api/resume/list", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setAllGetResumes(data.resumes || []);
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to load resumes");
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const fetchResumes = async () => {
+      if (!token) return;
+      setLoading(true);
+      try {
+        const { data } = await api.get('/api/resume/list', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setAllGetResumes(data.resumes || []);
+      } catch (err) {
+        toast.error(err?.response?.data?.message || 'Failed to load resumes');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResumes();
+  }, [token]);
 
   const handleDelete = async (resumeId) => {
-    if (!confirm("Delete this resume?")) return;
+    if (!confirm('Delete this resume?')) return;
     try {
       await api.delete(`/api/resume/delete/${resumeId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setAllGetResumes((prev) => prev.filter((r) => r._id !== resumeId));
-      toast.success("Resume deleted");
+      toast.success('Resume deleted');
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to delete resume");
+      toast.error(err?.response?.data?.message || 'Failed to delete resume');
     }
   };
 
@@ -50,7 +53,7 @@ const DashboardGetResume = () => {
     // Find the resume
     const resume = getResumes.find((r) => r._id === editResumeId);
     if (!resume) {
-      toast.error("Resume not found");
+      toast.error('Resume not found');
       setEditResumeId(null);
       return;
     }
@@ -59,31 +62,25 @@ const DashboardGetResume = () => {
       const resumeData = { ...resume, title: name };
       // If you need to send an image, use FormData with 'image' and resumeData as string
       const formData = new FormData();
-      formData.append("resumeId", editResumeId);
-      formData.append("resumeData", JSON.stringify(resumeData));
-      if (file) formData.append("image", file);
+      formData.append('resumeId', editResumeId);
+      formData.append('resumeData', JSON.stringify(resumeData));
+      if (file) formData.append('image', file);
 
-      const { data } = await api.put("/api/resume/update", formData, {
+      const { data } = await api.put('/api/resume/update', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
+          'Content-Type': 'multipart/form-data',
         },
       });
 
-      setAllGetResumes((prev) =>
-        prev.map((r) => (r._id === editResumeId ? data.resume : r))
-      );
+      setAllGetResumes((prev) => prev.map((r) => (r._id === editResumeId ? data.resume : r)));
 
-      toast.success("Resume updated");
+      toast.success('Resume updated');
       setEditResumeId(null);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Update failed");
+      toast.error(err?.response?.data?.message || 'Update failed');
     }
   };
-
-  useEffect(() => {
-    loadAllResumes();
-  }, [token]);
 
   return (
     <div className="text-white py-12 px-6">
@@ -94,12 +91,8 @@ const DashboardGetResume = () => {
           animate={{ y: 0, opacity: 1 }}
           className="mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-3 text-pink-500">
-            My Resumes
-          </h1>
-          <p className="text-red-200 text-lg">
-            Manage and edit your professional resumes
-          </p>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3 text-pink-500">My Resumes</h1>
+          <p className="text-red-200 text-lg">Manage and edit your professional resumes</p>
         </motion.div>
 
         {loading ? (
@@ -117,7 +110,7 @@ const DashboardGetResume = () => {
                   className="relative w-full h-56 flex flex-col items-center justify-center rounded-lg gap-2 border group hover:shadow-lg transition-all duration-100 cursor-pointer"
                   style={{
                     background: `linear-gradient(135deg, ${baseColor}10, ${baseColor}40)`,
-                    borderColor: baseColor + "40",
+                    borderColor: baseColor + '40',
                   }}
                 >
                   <button
@@ -134,16 +127,14 @@ const DashboardGetResume = () => {
                       className="text-sm md:text-xl group-hover:scale-105 transition-all px-2 text-center"
                       style={{ color: baseColor }}
                     >
-                      {resume.title || "Untitled Resume"}
+                      {resume.title || 'Untitled Resume'}
                     </p>
                     <p
                       className="text-[11px] md:text-[14px] text-slate-400 transition-all duration-300 px-2 text-center"
-                      style={{ color: baseColor + "90" }}
+                      style={{ color: baseColor + '90' }}
                     >
-                      Updated on{" "}
-                      {resume.updatedAt
-                        ? new Date(resume.updatedAt).toLocaleDateString()
-                        : "—"}
+                      Updated on{' '}
+                      {resume.updatedAt ? new Date(resume.updatedAt).toLocaleDateString() : '—'}
                     </p>
                   </div>
 
@@ -176,9 +167,7 @@ const DashboardGetResume = () => {
       {editResumeId && (
         <OpenModal
           mode="edit"
-          defaultName={
-            getResumes.find((r) => r._id === editResumeId)?.title || ""
-          }
+          defaultName={getResumes.find((r) => r._id === editResumeId)?.title || ''}
           onClose={() => setEditResumeId(null)}
           onSubmit={handleUpdate}
         />

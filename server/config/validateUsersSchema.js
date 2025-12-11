@@ -1,4 +1,4 @@
-import joi from "joi";
+import joi from 'joi';
 
 const validateUserRegister = (data) => {
   const schema = joi.object({

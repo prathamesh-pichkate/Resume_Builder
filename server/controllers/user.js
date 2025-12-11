@@ -1,11 +1,8 @@
-import { generateTokenRegister } from "../config/generateToken.js";
-import {
-  validateUserLogin,
-  validateUserRegister,
-} from "../config/validateUsersSchema.js";
-import User from "../models/User.js";
-import bcrypt from "bcrypt";
-import Resume from "../models/Resume.js";
+import { generateTokenRegister } from '../config/generateToken.js';
+import { validateUserLogin, validateUserRegister } from '../config/validateUsersSchema.js';
+import User from '../models/User.js';
+import bcrypt from 'bcrypt';
+import Resume from '../models/Resume.js';
 
 // Register User: POST: /api/user/register
 export const registerUser = async (req, res) => {
@@ -15,15 +12,13 @@ export const registerUser = async (req, res) => {
     // Validate input data
     const { error } = validateUserRegister(req.body);
     if (error) {
-      return res
-        .status(400)
-        .json({ message: error.details.map((d) => d.message).join(", ") });
+      return res.status(400).json({ message: error.details.map((d) => d.message).join(', ') });
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: 'User already exists' });
     }
 
     // Hash password
@@ -42,13 +37,13 @@ export const registerUser = async (req, res) => {
     const token = generateTokenRegister(newUser);
 
     res.status(201).json({
-      message: "User registered successfully",
+      message: 'User registered successfully',
       token,
       user: { id: newUser._id, name: newUser.name, email: newUser.email },
     });
   } catch (error) {
-    console.error("Error registering user:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error('Error registering user:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -59,32 +54,30 @@ export const loginUser = async (req, res) => {
 
     const { error } = validateUserLogin(req.body);
     if (error) {
-      return res
-        .status(400)
-        .json({ message: error.details.map((d) => d.message).join(", ") });
+      return res.status(400).json({ message: error.details.map((d) => d.message).join(', ') });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
     // IMPORTANT: await the comparePassword result
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid email or password" });
+      return res.status(400).json({ message: 'Invalid email or password' });
     }
 
     const token = generateTokenRegister(user);
 
     res.status(200).json({
-      message: "Login successful",
+      message: 'Login successful',
       token,
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (error) {
-    console.error("Error logging in user:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error('Error logging in user:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -94,21 +87,21 @@ export const getUserById = async (req, res) => {
     const userId = req.userId; // get the userID from the authenticated request middleware
 
     if (!userId) {
-      return res.status(401).json({ message: "Not authenticated" });
+      return res.status(401).json({ message: 'Not authenticated' });
     }
 
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(userId).select('-password');
 
     //Validate user existence
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
 
     //send the response
     res.status(200).json({ user });
   } catch (error) {
-    console.error("Error fetching user by ID:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error('Error fetching user by ID:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -133,16 +126,14 @@ export const googleLoginOrRegister = async (req, res) => {
 
     if (user) {
       // If this request came from the signup page, tell client the user already exists
-      if (from === "register") {
-        return res
-          .status(409)
-          .json({ message: "User already exists with this email" });
+      if (from === 'register') {
+        return res.status(409).json({ message: 'User already exists with this email' });
       }
 
       // Otherwise (default) behave as before: login existing user
       const token = generateTokenRegister(user);
       return res.status(200).json({
-        message: "Login successful",
+        message: 'Login successful',
         token,
         user: { id: user._id, name: user.name, email: user.email },
       });
@@ -151,7 +142,7 @@ export const googleLoginOrRegister = async (req, res) => {
       const randomPassword = Math.random().toString(36).slice(-8);
       const hashedPassword = await bcrypt.hash(randomPassword, 10);
 
-      console.log("randomPassword:", randomPassword);
+      console.log('randomPassword:', randomPassword);
 
       const newUser = new User({
         name,
@@ -163,13 +154,13 @@ export const googleLoginOrRegister = async (req, res) => {
       const token = generateTokenRegister(newUser);
 
       return res.status(201).json({
-        message: "User registered successfully",
+        message: 'User registered successfully',
         token,
         user: { id: newUser._id, name: newUser.name, email: newUser.email },
       });
     }
   } catch (error) {
-    console.error("Error in Google login/register:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error('Error in Google login/register:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };

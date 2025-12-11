@@ -1,11 +1,11 @@
-import { MenuIcon, XIcon } from "lucide-react";
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { navlinks } from "../data/navlinks";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import api from "../config/api";
-import { logout as logoutAction } from "../app/features/authSlice"; // adjust path if needed
+import { MenuIcon, XIcon } from 'lucide-react';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { navlinks } from '../data/navlinks';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import api from '../config/api';
+import { logout as logoutAction } from '../app/features/authSlice'; // adjust path if needed
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function Navbar() {
   const shownNavLinks = navlinks;
 
   // show logout button only when user is on /home (or subpaths)
-  const showLogoutButton = isLoggedIn && location.pathname.startsWith("/home");
+  const showLogoutButton = isLoggedIn && location.pathname.startsWith('/home');
 
   const handleLogout = () => {
     // dispatch redux action to clear auth state
@@ -29,19 +29,19 @@ export default function Navbar() {
 
     // clear storage / api header
     try {
-      localStorage.removeItem("token");
+      localStorage.removeItem('token');
       if (api?.defaults?.headers?.common) {
-        delete api.defaults.headers.common["Authorization"];
+        delete api.defaults.headers.common['Authorization'];
       }
     } catch (err) {
-      // ignore
+      console.error('Error during logout cleanup:', err);
     }
 
     // navigate to login and reload to ensure any in-memory state is cleared
-    navigate("/login", { replace: true });
+    navigate('/login', { replace: true });
     setTimeout(() => {
-      if (window.location.pathname !== "/login") {
-        window.location.href = "/login";
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
       } else {
         window.location.reload();
       }
@@ -55,15 +55,11 @@ export default function Navbar() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ type: "spring", stiffness: 250, damping: 70, mass: 1 }}
+        transition={{ type: 'spring', stiffness: 250, damping: 70, mass: 1 }}
       >
         <Link to="/">
           <div className="flex items-center">
-            <img
-              className="h-8 md:h-10 w-auto mx-2"
-              src="/assets/logoAi.png"
-              alt="logo"
-            />
+            <img className="h-8 md:h-10 w-auto mx-2" src="/assets/logoAi.png" alt="logo" />
             <h2 className="text-2xl text-purple-800 font-bold">Draftify</h2>
           </div>
         </Link>
@@ -81,11 +77,7 @@ export default function Navbar() {
             {/* desktop nav links (hidden on mobile) */}
             <div className="hidden md:flex items-center gap-8 transition duration-500">
               {shownNavLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.href}
-                  className="hover:text-pink-500 transition"
-                >
+                <Link key={link.name} to={link.href} className="hover:text-pink-500 transition">
                   {link.name}
                 </Link>
               ))}
@@ -94,7 +86,7 @@ export default function Navbar() {
             {/* show Login button only when not logged in */}
             {!isLoggedIn && (
               <button
-                onClick={() => navigate("/login")}
+                onClick={() => navigate('/login')}
                 className="hidden md:block px-6 py-2.5 bg-pink-600 hover:bg-pink-700 active:scale-95 transition-all rounded-full"
               >
                 Login
@@ -123,7 +115,7 @@ export default function Navbar() {
       {!showLogoutButton && (
         <div
           className={`fixed inset-0 z-100 bg-black/40 backdrop-blur flex flex-col items-center justify-center text-lg gap-8 md:hidden transition-transform duration-400 ${
-            isOpen ? "translate-x-0" : "-translate-x-full"
+            isOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
           {shownNavLinks.map((link) => (
@@ -142,7 +134,7 @@ export default function Navbar() {
             <button
               onClick={() => {
                 setIsOpen(false);
-                navigate("/login");
+                navigate('/login');
               }}
               className="px-6 py-2.5 bg-pink-600 hover:bg-pink-700 active:scale-95 transition-all rounded-full text-white"
             >
